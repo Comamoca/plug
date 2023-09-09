@@ -1,1 +1,2 @@
 name = "gleam_plug"
+dependencies = { gleam_http = "~> 3.5"}

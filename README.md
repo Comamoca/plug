@@ -1,3 +1,6 @@
+> **Note**
+> This repository had code using gleam/http that was not migrated in the fork source, so I modified it to the extent I can use it.
+
 # Gleam Plug! 🔌
 
 A Gleam HTTP service adapter for the Plug web application interface.

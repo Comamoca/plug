@@ -1,10 +1,12 @@
-import gleam/http
+import gleam/http.{Header}
+import gleam/http/request.{Request}
+import gleam/http/response.{Response}
 import gleam/result
 import gleam/option.{None, Option, Some}
 import gleam/dynamic.{Dynamic}
 import gleam/bit_builder.{BitBuilder}
 
-pub external type Conn
+pub type Conn
 
 pub external fn port(Conn) -> Int =
   "Elixir.GleamPlug" "port"
@@ -49,8 +51,8 @@ pub fn query_string(conn: Conn) -> Option(String) {
 /// the body directly from the conn, instead it must be given as the
 /// second argument.
 ///
-pub fn conn_to_request(conn: Conn, body: a) -> http.Request(a) {
-  http.Request(
+pub fn conn_to_request(conn: Conn, body: a) -> Request(a) {
+  Request(
     body: body,
     headers: req_headers(conn),
     host: host(conn),
@@ -65,7 +67,7 @@ pub fn conn_to_request(conn: Conn, body: a) -> http.Request(a) {
 external fn send_resp(conn: Conn, status: Int, body: BitBuilder) -> Conn =
   "Elixir.Plug.Conn" "send_resp"
 
-external fn merge_resp_headers(conn: Conn, headers: List(http.Header)) -> Conn =
+external fn merge_resp_headers(conn: Conn, headers: List(Header)) -> Conn =
   "Elixir.Plug.Conn" "merge_resp_headers"
 
 /// Send a Gleam HTTP response over the Plug connection.
@@ -74,7 +76,7 @@ external fn merge_resp_headers(conn: Conn, headers: List(http.Header)) -> Conn =
 /// plugs try to send another response, it will error out. Use the `halt`
 /// function after this function if you want to halt the plug pipeline.
 ///
-pub fn send(response: http.Response(BitBuilder), conn: Conn) -> Conn {
+pub fn send(response: Response(BitBuilder), conn: Conn) -> Conn {
   conn
   |> merge_resp_headers(response.headers)
   |> send_resp(response.status, response.body)
